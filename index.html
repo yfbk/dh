@@ -12,12 +12,24 @@
 	<meta name="description" content="视频引导页">
     <link rel="stylesheet" type="text/css" href="static/css/main.css">
     <link rel="stylesheet" type="text/css" href="static/css/media.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <style>
+        /* 添加全局光标样式 */
+        * {
+            cursor: url('millennium_base.cur'), auto !important;
+        }
+
+        /* 针对可点击元素的光标样式 */
+        a, button, [role="button"], input[type="submit"], input[type="button"], .clickable {
+            cursor: url('millennium_base.cur'), pointer !important;
+        }
+
         /* 视频背景样式 */
         body {
             background: #000000; /* 深色背景作为视频加载前的背景 */
             position: relative;
             overflow: hidden;
+            cursor: url('millennium_base.cur'), auto !important;
         }
 
         /* 视频容器样式 */
@@ -43,7 +55,7 @@
             left: 0;
         }
 
-        /* 调整文字颜色，确保在视频背景上清晰可见 */
+        /* 调整文字颜色，确保在视频背景上清晰可 */
         #footer .info, #footer .info a {
             color: rgba(255, 255, 255, 0.8);
         }
@@ -54,19 +66,21 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(to bottom,
-                rgba(0, 0, 0, 0.95),
-                rgba(0, 0, 0, 0.7)
-            ); /* 黑色透明渐变背景 */
-            backdrop-filter: blur(10px); /* 毛玻璃效果 */
-            z-index: 9999; /* 确保在最顶层 */
+            background: linear-gradient(90deg,
+                rgba(33, 3, 33, 0.95),
+                rgba(0, 12, 24, 0.95),
+                rgba(33, 3, 33, 0.95)
+            ); /* 赛博朋克风格渐变背景 */
+            backdrop-filter: blur(10px);
+            z-index: 9999;
             padding: 15px 0;
             display: flex;
-            justify-content: flex-start; /* 左对齐 */
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* 白色半透明边框 */
+            justify-content: flex-start;
+            border-bottom: 2px solid rgba(255, 0, 255, 0.3);
             box-shadow: 
-                0 4px 6px rgba(0, 0, 0, 0.3),
-                0 1px 15px rgba(0, 0, 0, 0.2); /* 增强阴影效果 */
+                0 4px 15px rgba(255, 0, 255, 0.2),
+                0 0 30px rgba(0, 255, 255, 0.1);
+            animation: navGlow 3s ease-in-out infinite;
         }
 
         /* 朋克未来风格按钮 */
@@ -122,7 +136,7 @@
             font-size: 24px;
         }
 
-        /* 导航菜单朋克风格 */
+        /* 导航菜单克风格 */
         .top-navbar a {
             color: #fff;
             text-decoration: none;
@@ -254,17 +268,21 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(to top,
-                rgba(0, 0, 0, 0.95),
-                rgba(0, 0, 0, 0.7)
-            );
+            background: linear-gradient(90deg,
+                rgba(33, 3, 33, 0.95),
+                rgba(0, 12, 24, 0.95),
+                rgba(33, 3, 33, 0.95)
+            ); /* 赛博朋克风格渐变背景 */
             backdrop-filter: blur(10px);
             z-index: 9999;
             padding: 15px 0;
             display: flex;
             justify-content: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+            border-top: 2px solid rgba(255, 0, 255, 0.3);
+            box-shadow: 
+                0 -4px 15px rgba(255, 0, 255, 0.2),
+                0 0 30px rgba(0, 255, 255, 0.1);
+            animation: navGlow 3s ease-in-out infinite;
         }
 
         /* 侧边栏和底部菜单项样式 */
@@ -289,9 +307,54 @@
             text-shadow: 0 0 10px rgba(255, 0, 255, 0.7),
                         0 0 20px rgba(0, 255, 255, 0.5);
         }
+
+        /* 添加导航栏发光动画 */
+        @keyframes navGlow {
+            0%, 100% {
+                box-shadow: 
+                    0 4px 15px rgba(255, 0, 255, 0.2),
+                    0 0 30px rgba(0, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 
+                    0 4px 20px rgba(255, 0, 255, 0.3),
+                    0 0 40px rgba(0, 255, 255, 0.2);
+            }
+        }
+
+        /* 导航菜单项样式增强 */
+        .top-navbar a, .bottom-navbar a {
+            text-shadow: 
+                0 0 10px rgba(255, 0, 255, 0.7),
+                0 0 20px rgba(0, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top-navbar a::before, .bottom-navbar a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .top-navbar a:hover::before, .bottom-navbar a:hover::before {
+            left: 100%;
+        }
     </style>
 </head>
 <body>
+    <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 99999999;pointer-events: none;"></canvas>
+
     <video id="background_video" autoplay loop muted playsinline>
         <source src="https://www.wayf.top/static/video/12%E6%9C%8821%E6%97%A5.mp4" type="video/mp4">
     </video>
@@ -299,7 +362,7 @@
 
     <!-- 添加顶部菜单栏 -->
     <nav class="top-navbar">
-        <a href="#home">主页</a>
+        <a href="#home" target="_blank">主页</a>
     </nav>
 
 	<header id="header">
@@ -322,9 +385,12 @@
 			Copyright&nbsp;&nbsp;©&nbsp;&nbsp;2017-2024&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://beian.miit.gov.cn" target="_blank">云凡工作室</a>
 		</span>
 	</div>
+    <script src="anime.min.js"></script>
+    <script src="fireworks.js"></script>
     <script src="static/js/bideo.js"></script>
     <script src="static/js/main.js"></script>
     <script src="static/js/jquery-2.2.4.min.js?ver=2.2.4"></script>
+    <script src="script.js"></script>
     <script type="text/javascript">
     /*$(document).bind("contextmenu",function(){return false;});	//禁键
     
@@ -336,6 +402,47 @@
                 event.returnValue = false;
          }
     }*/
+
+    // 禁用右键菜单
+    document.oncontextmenu = function() {
+        return false;
+    };
+
+    // 禁用开发者工具快捷键
+    document.onkeydown = function(e) {
+        if (e.keyCode === 123 || // F12
+            (e.ctrlKey && e.shiftKey && e.keyCode === 73) || // Ctrl+Shift+I
+            (e.ctrlKey && e.shiftKey && e.keyCode === 74) || // Ctrl+Shift+J
+            (e.ctrlKey && e.keyCode === 85) || // Ctrl+U
+            (e.ctrlKey && e.keyCode === 83)) { // Ctrl+S
+            return false;
+        }
+    };
+
+    // 禁用开发者工具
+    (function() {
+        function detectDevTools(allow) {
+            if(allow) return;
+            
+            const element = document.createElement('div');
+            element.__defineGetter__('id', function() {
+                window.location.href = "about:blank";
+            });
+            
+            setInterval(function() {
+                console.log(element);
+                console.clear();
+            }, 1000);
+        }
+        
+        detectDevTools(false);
+        
+        window.addEventListener('devtoolschange', function(e) {
+            if(e.detail.open) {
+                window.location.href = "about:blank";
+            }
+        });
+    })();
 
     // 更新为雪花生成函数
     function createSnowflake() {
@@ -374,11 +481,11 @@
     <!-- 添加底部菜单栏 -->
     <nav class="bottom-navbar">
         <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-P3CbRWtnFV6s62pq0Yg6bUyCZLkZRbfpluFnlyPTO3Qp2OBT%22,%22url%22:%22https://api.chatanywhere.tech%22}" target="_blank">丨云凡自建维护GPT-4丨</a>
-        <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-t0cRzIgGTIgjZBXw890c975a85484aC1Bf9e4538929bFa2d%22,%22url%22:%22https://free.v36.cm%22}">丨云凡自建维护GPT-4备用丨</a>
-        <a href="https://pyldgtsu.sealosbja.site">丨云凡自建维护GPT-3.5速度快丨</a>
-		<a href="https://gj.wayf.top/">丨常用网站导航丨</a>
-		<a href="https://gjx.wayf.top/">丨常用工具下载丨</a>
-		<a href="https://xjx.wayf.top/">丨云凡VIP视频解析站丨</a>
+        <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-t0cRzIgGTIgjZBXw890c975a85484aC1Bf9e4538929bFa2d%22,%22url%22:%22https://free.v36.cm%22}" target="_blank">丨云凡自建维护GPT-4备用丨</a>
+        <a href="https://pyldgtsu.sealosbja.site" target="_blank">丨云凡自建维护GPT-3.5速度快丨</a>
+        <a href="https://gj.wayf.top/" target="_blank">丨常用网站导航丨</a>
+        <a href="https://gjx.wayf.top/" target="_blank">丨常用工具下载丨</a>
+        <a href="https://xjx.wayf.top/" target="_blank">丨云凡VIP视频解析站丨</a>
     </nav>
 </body>
 </html>

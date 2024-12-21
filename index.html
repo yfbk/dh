@@ -12,44 +12,311 @@
 	<meta name="description" content="视频引导页">
     <link rel="stylesheet" type="text/css" href="static/css/main.css">
     <link rel="stylesheet" type="text/css" href="static/css/media.css">
+    <style>
+        /* 视频背景样式 */
+        body {
+            background: #000000; /* 深色背景作为视频加载前的背景 */
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 视频容器样式 */
+        #background_video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            height: 100%;
+            width: 100%;
+            z-index: -1;
+        }
+
+        /* 视频遮罩层 */
+        #video_cover {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7); /* 更暗的半透明黑色遮罩 */
+            z-index: 1; /* 确保在视频上方 */
+            top: 0;
+            left: 0;
+        }
+
+        /* 调整文字颜色，确保在视频背景上清晰可见 */
+        #footer .info, #footer .info a {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* 调整顶部菜单栏样式 */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to bottom,
+                rgba(0, 0, 0, 0.95),
+                rgba(0, 0, 0, 0.7)
+            ); /* 黑色透明渐变背景 */
+            backdrop-filter: blur(10px); /* 毛玻璃效果 */
+            z-index: 9999; /* 确保在最顶层 */
+            padding: 15px 0;
+            display: flex;
+            justify-content: flex-start; /* 左对齐 */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* 白色半透明边框 */
+            box-shadow: 
+                0 4px 6px rgba(0, 0, 0, 0.3),
+                0 1px 15px rgba(0, 0, 0, 0.2); /* 增强阴影效果 */
+        }
+
+        /* 朋克未来风格按钮 */
+        .apple-button {
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff); /* 赛博朋克风格变 */
+            background-size: 200% 200%; /* 渐变大小 */
+            color: #fff; /* 字体颜色 */
+            border: 2px solid rgba(255, 255, 255, 0.2); /* 半透明边框 */
+            border-radius: 8px; /* 圆角 */
+            padding: 12px 24px; /* 内边距 */
+            font-size: 16px; /* 字体大小 */
+            font-weight: bold; /* 粗体 */
+            cursor: pointer; /* 鼠标指针 */
+            transition: all 0.3s ease; /* 动画效果 */
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5); /* 文字霓虹效果 */
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3); /* 外发光效果 */
+            animation: cyberpunk 3s ease infinite; /* 渐变动画 */
+            position: relative; /* 相对定位 */
+            overflow: hidden; /* 隐藏溢出 */
+            text-decoration: none; /* 移除下划线 */
+        }
+
+        .apple-button:hover {
+            transform: scale(1.05); /* 悬停时放大 */
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.5); /* 增强外发光 */
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.8); /* 增强字发光 */
+        }
+
+        /* 标题朋克风格 */
+        #head h1 {
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(255, 0, 255, 0.7),
+                        0 0 25px rgba(0, 255, 255, 0.5);
+            font-weight: bold;
+            animation: cyberpunk 3s ease infinite;
+            letter-spacing: 2px;
+        }
+
+        /* 副标题朋克风格 */
+        #jj .sub_head {
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(255, 0, 255, 0.7),
+                        0 0 25px rgba(0, 255, 255, 0.5);
+            font-weight: bold;
+            animation: cyberpunk 3s ease infinite;
+            letter-spacing: 4px;
+            font-size: 24px;
+        }
+
+        /* 导航菜单朋克风格 */
+        .top-navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            position: relative;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: cyberpunk 3s ease infinite;
+            font-weight: bold; /* 设置为粗体 */
+        }
+
+        .top-navbar a:hover {
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.7),
+                        0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .top-navbar a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff00ff, #00ffff);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .top-navbar a:hover::after {
+            width: 100%;
+        }
+
+        /* 渐变动画 */
+        @keyframes cyberpunk {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* 更新为雪花样式 */
+        .meteor {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: snowfall linear infinite;
+            box-shadow: 
+                0 0 5px rgba(255, 255, 255, 0.8),
+                0 0 10px rgba(255, 255, 255, 0.6);
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0.2;
+            }
+        }
+
+        /* 移除原有的尾迹效果 */
+        .meteor::after {
+            display: none;
+        }
+
+        /* 左侧菜单栏样式 */
+        .left-navbar {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 200px;
+            background: linear-gradient(to right,
+                rgba(0, 0, 0, 0.95),
+                rgba(0, 0, 0, 0.7)
+            );
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 右侧菜单栏样式 */
+        .right-navbar {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 200px;
+            background: linear-gradient(to left,
+                rgba(0, 0, 0, 0.95),
+                rgba(0, 0, 0, 0.7)
+            );
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: -2px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 底部菜单栏样式 */
+        .bottom-navbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top,
+                rgba(0, 0, 0, 0.95),
+                rgba(0, 0, 0, 0.7)
+            );
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            padding: 15px 0;
+            display: flex;
+            justify-content: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 侧边栏和底部菜单项样式 */
+        .left-navbar a, .right-navbar a, .bottom-navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 5px 0;
+            font-size: 14px;
+            position: relative;
+            transition: all 0.3s ease;
+            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: cyberpunk 3s ease infinite;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .left-navbar a:hover, .right-navbar a:hover, .bottom-navbar a:hover {
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.7),
+                        0 0 20px rgba(0, 255, 255, 0.5);
+        }
+    </style>
 </head>
 <body>
+    <video id="background_video" autoplay loop muted playsinline>
+        <source src="/static/video/bj.mp4" type="video/mp4">
+    </video>
+    <div id="video_cover"></div>
+
+    <!-- 添加顶部菜单栏 -->
+    <nav class="top-navbar">
+        <a href="#home">主页</a>
+    </nav>
+
 	<header id="header">
 		<div class="header_left">
 		    <img src="static/img/logo.png" alt="云凡导航" title="云凡导航" style="display:none;">
-			
 		</div>
-		<div class="header_right" id="background_voice">
-			<img src="static/img/unmute.png" title="打开">
-		</div>
-	</header>
-	<div id="container">
-		<video id="background_video" loop="" muted=""><source src="/static
-/video/YFpf.mp4" type="video/mp4"></video>
-		<div id="video_cover" style="display: none;"></div>
-		<div id="overlay"></div>
-		<section id="main_content">
-			<div id="head">
-				<h1>云凡工作室 - 官网</h1>
-				<p class="sub_head"> </p>
-				<p class="info"></p>
-                                                <br>
-			</div>
-                                                <div id="jj">
-                                                <p class="sub_head">初遇，重逢，心动，别离。</p>
-                                                 </div>
-			<div id="links">
-                               <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-P3CbRWtnFV6s62pq0Yg6bUyCZLkZRbfpluFnlyPTO3Qp2OBT%22,%22url%22:%22https://api.chatanywhere.tech%22}" target="_blank">云凡自建维护GPT-4</a>
-			       <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-t0cRzIgGTIgjZBXw890c975a85484aC1Bf9e4538929bFa2d%22,%22url%22:%22https://free.v36.cm%22}" target="_blank">云凡自建维护GPT-4备用</a>
-			       <a href="https://pyldgtsu.sealosbja.site" target="_blank">云凡自建维护GPT-3.5速度快</a>
-                               <a href="https://gj.wayf.top/" target="_blank">常用网站导航</a>
-		               <a href="https://gjx.wayf.top/" target="_blank">常用工具下载</a>
-			      <a href="https://xjx.wayf.top/" target="_blank">云凡视频解析站</a>
 
-			</div>
-			<div style="position: absolute;color: white;"></div>
-		</section>
-	</div>
+	</header>
+	
+	<!-- 删除菜单栏 -->
+	<!-- <div id="navbar">
+	    <a href="#home">首页</a>
+	    <a href="#services">服务</a>
+	    <a href="#about">关于我们</a>
+	    <a href="#contact">联系我们</a>
+	</div> -->
+	<
 	<div id="footer">
 		<span class="info">
 			Copyright&nbsp;&nbsp;©&nbsp;&nbsp;2017-2024&nbsp;&nbsp;|&nbsp;&nbsp;<a href="https://beian.miit.gov.cn" target="_blank">云凡工作室</a>
@@ -59,7 +326,7 @@
     <script src="static/js/main.js"></script>
     <script src="static/js/jquery-2.2.4.min.js?ver=2.2.4"></script>
     <script type="text/javascript">
-    /*$(document).bind("contextmenu",function(){return false;});	//禁止右键
+    /*$(document).bind("contextmenu",function(){return false;});	//禁键
     
     $(document).bind("selectstart",function(){return false;});	//禁止选择
     
@@ -69,6 +336,49 @@
                 event.returnValue = false;
          }
     }*/
+
+    // 更新为雪花生成函数
+    function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.className = 'meteor'; // 保持类名不变，仅修改样式
+
+        // 随机起始位置（整个屏幕宽度）
+        snowflake.style.left = `${Math.random() * 100}%`;
+        
+        // 随机大小
+        const size = Math.random() * 3 + 2;
+        snowflake.style.width = `${size}px`;
+        snowflake.style.height = `${size}px`;
+        
+        // 随机动画持续时间
+        snowflake.style.animationDuration = `${Math.random() * 5 + 8}s`; // 8-13秒
+        
+        // 随机延迟开始
+        snowflake.style.animationDelay = `${Math.random() * 5}s`;
+        
+        document.body.appendChild(snowflake);
+
+        // 动画结束后移除雪花
+        setTimeout(() => {
+            snowflake.remove();
+        }, (parseFloat(snowflake.style.animationDuration) + parseFloat(snowflake.style.animationDelay)) * 1000);
+    }
+
+    // 调整生成频率
+    setInterval(createSnowflake, 100); // 每100毫秒生成一个雪花
     </script>
+
+
+
+
+    <!-- 添加底部菜单栏 -->
+    <nav class="bottom-navbar">
+        <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-P3CbRWtnFV6s62pq0Yg6bUyCZLkZRbfpluFnlyPTO3Qp2OBT%22,%22url%22:%22https://api.chatanywhere.tech%22}" target="_blank">丨云凡自建维护GPT-4丨</a>
+        <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-t0cRzIgGTIgjZBXw890c975a85484aC1Bf9e4538929bFa2d%22,%22url%22:%22https://free.v36.cm%22}">丨云凡自建维护GPT-4备用丨</a>
+        <a href="https://pyldgtsu.sealosbja.site">丨云凡自建维护GPT-3.5速度快丨</a>
+		<a href="https://gj.wayf.top/">丨常用网站导航丨</a>
+		<a href="https://gjx.wayf.top/">丨常用工具下载丨</a>
+		<a href="https://xjx.wayf.top/">丨云凡VIP视频解析站丨</a>
+    </nav>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="profile" href="https://gmpg.org/xfn/11">
     <title>云凡导航</title>
     <meta name='robots' content='max-image-preview:large' />
@@ -350,6 +350,99 @@
         .top-navbar a:hover::before, .bottom-navbar a:hover::before {
             left: 100%;
         }
+
+        /* 添加响应式布局样式 */
+        @media screen and (max-width: 768px) {
+            /* 顶部导航栏移动端样式 */
+            .top-navbar {
+                padding: 10px 0;
+            }
+            
+            .top-navbar a {
+                font-size: 14px;
+                padding: 8px 15px;
+                margin: 0 5px;
+            }
+
+            /* 底部导航栏移动端样式 */
+            .bottom-navbar {
+                padding: 10px 0;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .bottom-navbar a {
+                font-size: 12px;
+                padding: 8px 10px;
+                margin: 5px 2px;
+                white-space: normal;
+                text-align: center;
+            }
+
+            /* 标题移动端样式 */
+            #head h1 {
+                font-size: 24px;
+                margin: 10px 0;
+            }
+
+            #jj .sub_head {
+                font-size: 18px;
+                letter-spacing: 2px;
+            }
+
+            /* 隐藏左右侧边栏 */
+            .left-navbar, .right-navbar {
+                display: none;
+            }
+
+            /* 调整页脚样式 */
+            #footer {
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            /* 调整视频背景 */
+            #background_video {
+                object-fit: cover;
+                width: 100vw;
+                height: 100vh;
+            }
+        }
+
+        /* 平板设备样式 */
+        @media screen and (min-width: 769px) and (max-width: 1024px) {
+            .bottom-navbar a {
+                font-size: 13px;
+                padding: 10px 15px;
+            }
+
+            .left-navbar, .right-navbar {
+                width: 150px;
+            }
+        }
+
+        /* 确保内容居中且有适当边距 */
+        #main_content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        /* 添加弹性布局支持 */
+        .bottom-navbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        /* 优化触摸屏交互 */
+        @media (hover: none) {
+            .top-navbar a, .bottom-navbar a {
+                padding: 12px 20px; /* 增大触摸区域 */
+            }
+        }
     </style>
 </head>
 <body>
@@ -465,7 +558,7 @@
         
         document.body.appendChild(snowflake);
 
-        // 动画结束后移除雪花
+        // 动画��束后移除雪花
         setTimeout(() => {
             snowflake.remove();
         }, (parseFloat(snowflake.style.animationDuration) + parseFloat(snowflake.style.animationDelay)) * 1000);

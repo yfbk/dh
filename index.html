@@ -19,20 +19,14 @@
             cursor: url('millennium_base.cur'), auto !important;
         }
 
-        /* 针对可点击元素的光标样式 */
-        a, button, [role="button"], input[type="submit"], input[type="button"], .clickable {
-            cursor: url('millennium_base.cur'), pointer !important;
-        }
-
         /* 视频背景样式 */
         body {
             background: #000000; /* 深色背景作为视频加载前的背景 */
             position: relative;
             overflow: hidden;
-            cursor: url('millennium_base.cur'), auto !important;
         }
 
-        /* 视频容器样式 */
+        /* 视频式 */
         #background_video {
             position: fixed;
             top: 50%;
@@ -55,7 +49,7 @@
             left: 0;
         }
 
-        /* 调整文字颜色，确保在视频背景上清晰可 */
+        /* 调整文字颜色，确保在视频背景上清晰可见 */
         #footer .info, #footer .info a {
             color: rgba(255, 255, 255, 0.8);
         }
@@ -89,7 +83,7 @@
             background-size: 200% 200%; /* 渐变大小 */
             color: #fff; /* 字体颜色 */
             border: 2px solid rgba(255, 255, 255, 0.2); /* 半透明边框 */
-            border-radius: 8px; /* 圆角 */
+            border-radius: 8px; /* 圆 */
             padding: 12px 24px; /* 内边距 */
             font-size: 16px; /* 字体大小 */
             font-weight: bold; /* 粗体 */
@@ -278,77 +272,117 @@
             padding: 15px 0;
             display: flex;
             justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
             border-top: 2px solid rgba(255, 0, 255, 0.3);
             box-shadow: 
                 0 -4px 15px rgba(255, 0, 255, 0.2),
                 0 0 30px rgba(0, 255, 255, 0.1);
-            animation: navGlow 3s ease-in-out infinite;
         }
 
-        /* 侧边栏和底部菜单项样式 */
-        .left-navbar a, .right-navbar a, .bottom-navbar a {
-            color: #fff;
+        .bottom-navbar a {
+            position: relative;
+            display: inline-block;
+            padding: 15px 20px;
+            color: #ff00ff; /* 恢复为霓虹粉色 */
             text-decoration: none;
-            padding: 10px 20px;
-            margin: 5px 0;
-            font-size: 14px;
-            position: relative;
-            transition: all 0.3s ease;
-            background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: cyberpunk 3s ease infinite;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        .left-navbar a:hover, .right-navbar a:hover, .bottom-navbar a:hover {
-            text-shadow: 0 0 10px rgba(255, 0, 255, 0.7),
-                        0 0 20px rgba(0, 255, 255, 0.5);
-        }
-
-        /* 添加导航栏发光动画 */
-        @keyframes navGlow {
-            0%, 100% {
-                box-shadow: 
-                    0 4px 15px rgba(255, 0, 255, 0.2),
-                    0 0 30px rgba(0, 255, 255, 0.1);
-            }
-            50% {
-                box-shadow: 
-                    0 4px 20px rgba(255, 0, 255, 0.3),
-                    0 0 40px rgba(0, 255, 255, 0.2);
-            }
-        }
-
-        /* 导航菜单项样式增强 */
-        .top-navbar a, .bottom-navbar a {
-            text-shadow: 
-                0 0 10px rgba(255, 0, 255, 0.7),
-                0 0 20px rgba(0, 255, 255, 0.5);
-            position: relative;
+            text-transform: uppercase;
+            transition: 1.2s;
+            letter-spacing: 4px;
             overflow: hidden;
-        }
-
-        .top-navbar a::before, .bottom-navbar a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.2),
-                transparent
+            margin: 5px;
+            font-family: 'Raleway', sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            background: linear-gradient(90deg, 
+                rgba(255, 0, 255, 0.1),
+                rgba(0, 255, 255, 0.1)
             );
-            transition: 0.5s;
+            border: 1px solid rgba(255, 0, 255, 0.2);
         }
 
-        .top-navbar a:hover::before, .bottom-navbar a:hover::before {
-            left: 100%;
+        .bottom-navbar a:hover {
+            background: linear-gradient(90deg, #ff00ff, #00ffff);
+            color: #000;
+            box-shadow: 
+                0 0 5px rgba(255, 0, 255, 0.5),
+                0 0 25px rgba(255, 0, 255, 0.5),
+                0 0 50px rgba(255, 0, 255, 0.5),
+                0 0 200px rgba(255, 0, 255, 0.5);
+            -webkit-box-reflect: below 1px linear-gradient(transparent, rgba(0, 0, 0, 0.2));
+        }
+
+        .bottom-navbar a span {
+            position: absolute;
+            display: block;
+        }
+
+        .bottom-navbar a span:nth-child(1) {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ff00ff);
+            animation: animate1 3s linear infinite;
+        }
+
+        .bottom-navbar a span:nth-child(2) {
+            top: -100%;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, transparent, #00ffff);
+            animation: animate2 3s linear infinite;
+            animation-delay: 0.75s;
+        }
+
+        .bottom-navbar a span:nth-child(3) {
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(270deg, transparent, #ff00ff);
+            animation: animate3 3s linear infinite;
+            animation-delay: 1.5s;
+        }
+
+        .bottom-navbar a span:nth-child(4) {
+            bottom: -100%;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(360deg, transparent, #00ffff);
+            animation: animate4 3s linear infinite;
+            animation-delay: 2.25s;
+        }
+
+        @keyframes animate1 {
+            0% { left: -100%; }
+            50%,100% { left: 100%; }
+        }
+
+        @keyframes animate2 {
+            0% { top: -100%; }
+            50%,100% { top: 100%; }
+        }
+
+        @keyframes animate3 {
+            0% { right: -100%; }
+            50%,100% { right: 100%; }
+        }
+
+        @keyframes animate4 {
+            0% { bottom: -100%; }
+            50%,100% { bottom: 100%; }
+        }
+
+        /* 添加响应式样式 */
+        @media screen and (max-width: 768px) {
+            .bottom-navbar a {
+                padding: 10px 15px;
+                font-size: 12px;
+                letter-spacing: 2px;
+            }
         }
 
         /* 添加响应式布局样式 */
@@ -409,7 +443,7 @@
             }
         }
 
-        /* 平板设备样式 */
+        /* 平板备样式 */
         @media screen and (min-width: 769px) and (max-width: 1024px) {
             .bottom-navbar a {
                 font-size: 13px;
@@ -446,10 +480,14 @@
     </style>
 </head>
 <body>
+    <!-- 添加新的 canvas 用于鼠标移动效果 -->
+    <canvas id="canvas" class="canvas" style="position: fixed;left: 0;top: 0;z-index: 99999998;pointer-events: none;"></canvas>
+    
+    <!-- 现有的 canvas -->
     <canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 99999999;pointer-events: none;"></canvas>
 
     <video id="background_video" autoplay loop muted playsinline>
-        <source src="https://www.wayf.top/static/video/12%E6%9C%8821%E6%97%A5.mp4" type="video/mp4">
+        <source src="/static/video/bj.mp4" type="video/mp4">
     </video>
     <div id="video_cover"></div>
 
@@ -484,6 +522,7 @@
     <script src="static/js/main.js"></script>
     <script src="static/js/jquery-2.2.4.min.js?ver=2.2.4"></script>
     <script src="script.js"></script>
+    <script src="1.js"></script>
     <script type="text/javascript">
     /*$(document).bind("contextmenu",function(){return false;});	//禁键
     
@@ -537,7 +576,7 @@
         });
     })();
 
-    // 更新为雪花生成函数
+    // 更新为雪花生成数
     function createSnowflake() {
         const snowflake = document.createElement('div');
         snowflake.className = 'meteor'; // 保持类名不变，仅修改样式
@@ -558,7 +597,7 @@
         
         document.body.appendChild(snowflake);
 
-        // 动画��束后移除雪花
+        // 动画束后移除雪花
         setTimeout(() => {
             snowflake.remove();
         }, (parseFloat(snowflake.style.animationDuration) + parseFloat(snowflake.style.animationDelay)) * 1000);
@@ -566,6 +605,24 @@
 
     // 调整生成频率
     setInterval(createSnowflake, 100); // 每100毫秒生成一个雪花
+
+    // 鼠标点击效果
+    /*document.addEventListener('click', function(e) {
+        const x = e.clientX;
+        const y = e.clientY;
+
+        // 创建爆炸效果
+        const explosion = document.createElement('div');
+        explosion.className = 'explosion';
+        explosion.style.left = `${x}px`;
+        explosion.style.top = `${y}px`;
+        document.body.appendChild(explosion);
+
+        // 动画结束后移除
+        setTimeout(() => {
+            explosion.remove();
+        }, 1000);
+    });*/
     </script>
 
 
@@ -573,12 +630,48 @@
 
     <!-- 添加底部菜单栏 -->
     <nav class="bottom-navbar">
-        <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-P3CbRWtnFV6s62pq0Yg6bUyCZLkZRbfpluFnlyPTO3Qp2OBT%22,%22url%22:%22https://api.chatanywhere.tech%22}" target="_blank">丨云凡自建维护GPT-4丨</a>
-        <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-t0cRzIgGTIgjZBXw890c975a85484aC1Bf9e4538929bFa2d%22,%22url%22:%22https://free.v36.cm%22}" target="_blank">丨云凡自建维护GPT-4备用丨</a>
-        <a href="https://pyldgtsu.sealosbja.site" target="_blank">丨云凡自建维护GPT-3.5速度快丨</a>
-        <a href="https://gj.wayf.top/" target="_blank">丨常用网站导航丨</a>
-        <a href="https://gjx.wayf.top/" target="_blank">丨常用工具下载丨</a>
-        <a href="https://xjx.wayf.top/" target="_blank">丨云凡VIP视频解析站丨</a>
+        <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-P3CbRWtnFV6s62pq0Yg6bUyCZLkZRbfpluFnlyPTO3Qp2OBT%22,%22url%22:%22https://api.chatanywhere.tech%22}" target="_blank">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            云凡自建维护GPT-4
+        </a>
+        <a href="https://ai.wayf.top/#/?settings={%22key%22:%22sk-t0cRzIgGTIgjZBXw890c975a85484aC1Bf9e4538929bFa2d%22,%22url%22:%22https://free.v36.cm%22}" target="_blank">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            云凡自建维护GPT-4备用
+        </a>
+        <a href="https://pyldgtsu.sealosbja.site" target="_blank">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            云凡自建维护GPT-3.5速度快
+        </a>
+        <a href="https://gj.wayf.top/" target="_blank">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            常用网站导航
+        </a>
+        <a href="https://gjx.wayf.top/" target="_blank">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            常用工具下载
+        </a>
+        <a href="https://xjx.wayf.top/" target="_blank">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            云凡VIP视频解析站
+        </a>
     </nav>
 </body>
 </html>

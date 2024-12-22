@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>很平凡的凡</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            position: relative;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+        }
+
+        #bg-video {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -2;
+            object-fit: cover;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: -1;
+        }
+
+        .nav-sidebar {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            border-right: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .nav-sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-sidebar li {
+            padding: 15px 25px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-sidebar li:hover {
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .nav-sidebar a {
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            padding: 20px;
+        }
+
+        .history-container,
+        .weibo-container,
+        .boxoffice-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 12px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+            width: calc(100% - 30px);
+            height: 230px;
+            margin: 0 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .weibo-container::before,
+        .weibo-container::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            bottom: 10px;
+            width: 1px;
+            background: linear-gradient(
+                to bottom,
+                rgba(0, 255, 255, 0) 0%,
+                rgba(0, 255, 255, 0.5) 50%,
+                rgba(0, 255, 255, 0) 100%
+            );
+        }
+
+        .weibo-container::before {
+            left: -15px;
+        }
+
+        .weibo-container::after {
+            right: -15px;
+        }
+
+        .boxoffice-title {
+            text-align: center;
+            color: #00ffff;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .boxoffice-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                rgba(0, 255, 255, 0) 0%,
+                rgba(0, 255, 255, 0.8) 50%,
+                rgba(0, 255, 255, 0) 100%
+            );
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .boxoffice-title:hover::after {
+            width: 100px;
+            transition: width 0.3s ease;
+        }
+
+        .boxoffice-list {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0;
+        }
+
+        .boxoffice-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9em;
+        }
+
+        .boxoffice-item:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateX(10px);
+        }
+
+        .boxoffice-rank {
+            color: #00ffff;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .boxoffice-info {
+            flex-grow: 1;
+        }
+
+        .boxoffice-name {
+            font-size: 0.95em;
+            margin-bottom: 3px;
+        }
+
+        .boxoffice-data {
+            font-size: 0.8em;
+            color: #0099ff;
+        }
+
+        .button-container {
+            width: 100%;
+            text-align: center;
+        }
+
+        .title {
+            text-align: center;
+            color: #00ffff;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                rgba(0, 255, 255, 0) 0%,
+                rgba(0, 255, 255, 0.8) 50%,
+                rgba(0, 255, 255, 0) 100%
+            );
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .title:hover::after {
+            width: 100px;
+            transition: width 0.3s ease;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0;
+        }
+
+        .history-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .history-item:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateX(10px);
+        }
+
+        .refresh-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            color: #00ffff;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .refresh-button:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .weibo-title {
+            text-align: center;
+            color: #00ffff;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .weibo-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(
+                90deg,
+                rgba(0, 255, 255, 0) 0%,
+                rgba(0, 255, 255, 0.8) 50%,
+                rgba(0, 255, 255, 0) 100%
+            );
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .weibo-title:hover::after {
+            width: 100px;
+            transition: width 0.3s ease;
+        }
+
+        .weibo-list {
+            list-style: none;
+            padding: 0;
+            margin: 5px 0;
+            overflow: hidden;
+        }
+
+        .weibo-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            font-size: 0.9em;
+        }
+
+        .weibo-item:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateX(10px);
+        }
+
+        .weibo-rank {
+            color: #00ffff;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9em;
+            min-width: 20px;
+        }
+
+        .weibo-title-text {
+            flex-grow: 1;
+        }
+
+        .weibo-heat {
+            color: #0099ff;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .weibo-label {
+            background: #ff3852;
+            color: white;
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            margin-left: 10px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .page-btn {
+            padding: 5px 12px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            color: #00ffff;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+
+        .page-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 255, 255, 0.5);
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .profile-card {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid rgba(0, 255, 255, 0.3);
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+        .profile-avatar img:hover {
+            border-color: rgba(0, 255, 255, 0.8);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .profile-info h3 {
+            color: #00ffff;
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .profile-bio {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+            margin: 0 0 15px 0;
+            line-height: 1.5;
+            padding: 0 10px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-links {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .profile-link {
+            padding: 8px 15px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .profile-link:hover {
+            background: rgba(0, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .profile-link.email {
+            background: rgba(255, 69, 0, 0.2);
+        }
+
+        .profile-link.github {
+            background: rgba(51, 51, 51, 0.2);
+        }
+
+        .profile-link.email:hover {
+            background: rgba(255, 69, 0, 0.3);
+        }
+
+        .profile-link.github:hover {
+            background: rgba(51, 51, 51, 0.3);
+        }
+
+        .website-nav {
+            padding: 20px;
+            min-height: calc(100vh - 40px);
+            width: 100%;
+        }
+
+        .website-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .website-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            color: #00ffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .website-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .website-item i {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .website-item span {
+            font-size: 1em;
+            text-align: center;
+        }
+
+        .function-list {
+            padding: 20px;
+            min-height: calc(100vh - 40px);
+            width: 100%;
+        }
+
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .function-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .function-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .function-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .function-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .function-card:hover .function-image img {
+            transform: scale(1.1);
+        }
+
+        .function-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .function-content h3 {
+            color: #00ffff;
+            margin: 0 0 10px 0;
+            font-size: 1.3em;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .function-content p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0 0 20px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .function-btn {
+            display: inline-block;
+            padding: 8px 25px;
+            background: rgba(0, 255, 255, 0.2);
+            color: #00ffff;
+            text-decoration: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .function-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .search-section {
+            grid-column: 1 / -1;  /* 占据所有列 */
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                rgba(0, 255, 255, 0) 0%,
+                rgba(0, 255, 255, 0.5) 50%,
+                rgba(0, 255, 255, 0) 100%
+            );
+            margin: 20px 0;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 600px;
+            max-width: 90%;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(0, 255, 255, 0.5);
+            font-size: 1.2em;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1em;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: -60px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 8px 50px;
+            border: none;
+            border-radius: 20px;
+            background: rgba(0, 255, 255, 0.2);
+            color: #00ffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+        }
+
+        .search-options {
+            position: absolute;
+            right: 100px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 15px;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .radio-label input[type="radio"] {
+            display: none;
+        }
+
+        .radio-text {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .radio-text::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .radio-text::after {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ffff;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .radio-label input[type="radio"]:checked + .radio-text::before {
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .radio-label input[type="radio"]:checked + .radio-text::after {
+            opacity: 1;
+        }
+
+        .radio-label:hover .radio-text::before {
+            border-color: #00ffff;
+        }
+
+        /* 修改列表项间距 */
+        .history-item,
+        .weibo-item,
+        .boxoffice-item {
+            padding: 4px 12px;  /* 上下内边距从3px改为6px */
+            margin: 6px 0;      /* 上下外边距从2px改为6px */
+            font-size: 0.85em;
+            line-height: 1.4;   /* 行高从1.2改为1.4 */
+        }
+
+        /* 修改标题下方间距 */
+        .title,
+        .weibo-title,
+        .boxoffice-title {
+            font-size: 1.1em;
+            margin-bottom: 12px;  /* 从8px改为12px */
+            padding-bottom: 12px; /* 从8px改为12px */
+        }
+
+        /* 修改列表容的内边距 */
+        .history-list,
+        .weibo-list,
+        .boxoffice-list {
+            margin: 8px 0;  /* 从5px改为8px */
+            height: calc(100% - 60px); /* 从50px改为60px，为标题留出更多空间 */
+            overflow: hidden;
+            padding: 0 5px; /* 添加左右内边距 */
+        }
+
+        /* 修改微博热搜特定样式 */
+        .weibo-rank {
+            min-width: 14px;
+            font-size: 0.8em;
+        }
+
+        .weibo-heat {
+            font-size: 0.7em;
+        }
+
+        .weibo-label {
+            padding: 0 2px;
+            font-size: 0.65em;
+        }
+
+        /* 修改票数据样式 */
+        .boxoffice-name {
+            font-size: 0.8em;
+            margin-bottom: 2px;
+        }
+
+        .boxoffice-data {
+            font-size: 0.7em;
+        }
+
+        /* 修改搜索区域样式，添加下划线 */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        /* 添加下划线样式 */
+        .search-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                rgba(0, 255, 255, 0) 0%,
+                rgba(0, 255, 255, 0.5) 50%,
+                rgba(0, 255, 255, 0) 100%
+            );
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+            transition: width 0.3s ease;
+        }
+
+        /* 添加悬停效果 */
+        .search-container:hover::after {
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <video id="bg-video" autoplay muted loop playsinline>
+        <source src="https://www.wayf.top/static/video/12%E6%9C%8821%E6%97%A5.mp4" type="video/mp4">
+    </video>
+
+    <nav class="nav-sidebar">
+        <div class="profile-card">
+            <div class="profile-avatar">
+                <img src="https://www.wayf.top/static/video/tx.jpg" alt="avatar">
+            </div>
+            <div class="profile-info">
+                <h3>很平凡的凡</h3>
+                <p class="profile-bio" id="yiyan">加载中...</p>
+            </div>
+            <div class="profile-links">
+                <a href="mailto:your@email.com" class="profile-link email">
+                    <i class="fas fa-envelope"></i>
+                    Email
+                </a>
+                <a href="https://github.com/yourusername" class="profile-link github" target="_blank">
+                    <i class="fab fa-github"></i>
+                    GitHub
+                </a>
+            </div>
+        </div>
+        <ul>
+            <li><a href="#"><i class="fas fa-home"></i>首页</a></li>
+            <li><a href="#"><i class="fas fa-history"></i>网站整理</a></li>
+            <li><a href="#"><i class="fas fa-fire"></i>功能列表</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i>设置</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-content">
+        <div class="container" id="main-container">
+            <div class="history-container">
+                <h1 class="title">历史上的今天</h1>
+                <ul class="history-list" id="history-list"></ul>
+            </div>
+
+            <div class="weibo-container">
+                <h2 class="weibo-title">微博热搜</h2>
+                <ul class="weibo-list" id="weibo-list"></ul>
+            </div>
+
+            <div class="boxoffice-container">
+                <h2 class="boxoffice-title">实时票房</h2>
+                <ul class="boxoffice-list" id="boxoffice-list"></ul>
+            </div>
+
+            <div class="search-section">
+                <div class="divider"></div>
+                <div class="search-container">
+                    <form id="search-form" target="_blank">
+                        <div class="search-box">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" name="q" placeholder="输入关键词搜索..." class="search-input">
+                            <div class="search-options">
+                                <label class="radio-label">
+                                    <input type="radio" name="search-engine" value="baidu" checked>
+                                    <span class="radio-text">百度</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="search-engine" value="google">
+                                    <span class="radio-text">谷歌</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="search-btn">搜索</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="website-nav" id="website-nav" style="display: none;">
+            <div class="website-grid">
+                <a href="https://github.com" class="website-item" target="_blank">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+                <a href="https://google.com" class="website-item" target="_blank">
+                    <i class="fab fa-google"></i>
+                    <span>Google</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="function-list" id="function-list" style="display: none;">
+            <div class="function-grid">
+                <div class="function-card">
+                    <div class="function-image">
+                        <img src="https://www.wayf.top/static/video/tx.jpg" alt="功能图片">
+                    </div>
+                    <div class="function-content">
+                        <h3>BD系统</h3>
+                        <p>yyds</p>
+                        <a href="/static/yf.html" class="function-btn">访问</a>
+                    </div>
+                </div>
+                
+                <div class="function-card">
+                    <div class="function-image">
+                        <img src="https://www.wayf.top/static/video/tx.jpg" alt="功能图片">
+                    </div>
+                    <div class="function-content">
+                        <h3>音乐在线听歌下载网</h3>
+                        <p>无损高品质音乐在线听</p>
+                        <a href="#" class="function-btn">访问</a>
+                    </div>
+                </div>
+
+                <div class="function-card">
+                    <div class="function-image">
+                        <img src="https://www.wayf.top/static/video/tx.jpg" alt="功能图片">
+                    </div>
+                    <div class="function-content">
+                        <h3>VIP视频解析站</h3>
+                        <p>所有视频免费看</p>
+                        <a href="#" class="function-btn">访问</a>
+                    </div>
+                </div>
+
+                <div class="function-card">
+                    <div class="function-image">
+                        <img src="https://www.wayf.top/static/video/tx.jpg" alt="功能图片">
+                    </div>
+                    <div class="function-content">
+                        <h3>百度网盘文件搜索</h3>
+                        <p>可搜索所有百度网盘分享项目</p>
+                        <a href="#" class="function-btn">访问</a>
+                    </div>
+                </div>
+
+                <div class="function-card">
+                    <div class="function-image">
+                        <img src="https://www.wayf.top/static/video/tx.jpg" alt="功能图片">
+                    </div>
+                    <div class="function-content">
+                        <h3>阿里网盘搜索</h3>
+                        <p>可搜索所有阿里网盘分享项目</p>
+                        <a href="#" class="function-btn">访问</a>
+                    </div>
+                </div>
+
+                <div class="function-card">
+                    <div class="function-image">
+                        <img src="https://www.wayf.top/static/video/tx.jpg" alt="功能图片">
+                    </div>
+                    <div class="function-content">
+                        <h3>GPTAI对话窗口</h3>
+                        <p>支持所有对话模型</p>
+                        <a href="#" class="function-btn">访问</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 0;
+        let weiboData = null;
+        let boxofficeCurrentPage = 0;
+        let boxofficeData = null;
+
+        async function fetchWithProxy(url, retries = 2) {
+            const proxyUrl = 'https://cors.eu.org/';  // 使用更快的代理服务器
+            for (let i = 0; i <= retries; i++) {
+                try {
+                    const response = await fetch(proxyUrl + url);
+                    return await response.json();
+                } catch (error) {
+                    if (i === retries) throw error;
+                    await new Promise(resolve => setTimeout(resolve, 1000 * i)); // 重试前等待
+                }
+            }
+        }
+
+        async function fetchHistoryData() {
+            try {
+                const historyData = await fetchWithProxy('http://shanhe.kim/api/za/lishi.php?format=json');
+                
+                if (historyData.code === "200") {
+                    const historyList = document.getElementById('history-list');
+                    historyList.innerHTML = '';
+                    
+                    historyData.content.slice(0, 5).forEach(event => {
+                        const li = document.createElement('li');
+                        li.className = 'history-item';
+                        li.textContent = event;
+                        historyList.appendChild(li);
+                    });
+                }
+            } catch (error) {
+                console.error('获取历史数据失败:', error);
+                const historyList = document.getElementById('history-list');
+                historyList.innerHTML = '<li class="history-item">获取数据失败：' + error.message + '</li>';
+            }
+        }
+
+        async function fetchWeiboData() {
+            try {
+                weiboData = await fetchWithProxy('http://shanhe.kim/api/za/weibo.php');
+                
+                if (weiboData.code === "200") {
+                    updateWeiboList();
+                }
+            } catch (error) {
+                console.error('获取微博数据失败:', error);
+                const weiboList = document.getElementById('weibo-list');
+                weiboList.innerHTML = '<li class="weibo-item">获取数据失败，请稍后重试</li>';
+            }
+        }
+
+        function updateWeiboList() {
+            const weiboList = document.getElementById('weibo-list');
+            weiboList.innerHTML = '';
+            
+            for (let i = 1; i <= 5; i++) {
+                const topic = weiboData[`Top_${i}`];
+                if (topic) {
+                    const li = document.createElement('li');
+                    li.className = 'weibo-item';
+                    li.onclick = () => window.open(`https://s.weibo.com/weibo?q=${encodeURIComponent(topic.title)}`, '_blank');
+                    
+                    const heatNum = parseInt(topic.heatnum);
+                    const formattedHeat = heatNum >= 10000 ? 
+                        (heatNum / 10000).toFixed(1) + '万' : 
+                        heatNum.toString();
+
+                    li.innerHTML = `
+                        <span class="weibo-rank">${i}</span>
+                        <span class="weibo-title-text">${topic.title}</span>
+                        <span class="weibo-heat">${formattedHeat}</span>
+                        ${topic.labelname !== "无" ? `<span class="weibo-label">${topic.labelname}</span>` : ''}
+                    `;
+                    weiboList.appendChild(li);
+                }
+            }
+        }
+
+        async function fetchBoxOfficeData() {
+            try {
+                boxofficeData = await fetchWithProxy('http://shanhe.kim/api/za/piaofang.php');
+                
+                if (boxofficeData.code === "200") {
+                    boxofficeCurrentPage = 0;
+                    updateBoxOfficeList();
+                }
+            } catch (error) {
+                console.error('获取票房数据失败:', error);
+                const boxofficeList = document.getElementById('boxoffice-list');
+                boxofficeList.innerHTML = '<li class="boxoffice-item">获取数据失败，请稍后重试</li>';
+            }
+        }
+
+        function updateBoxOfficeList() {
+            const boxofficeList = document.getElementById('boxoffice-list');
+            boxofficeList.innerHTML = '';
+            
+            for (let i = 1; i <= 3; i++) {
+                const movie = boxofficeData[`Top_${i}`];
+                if (movie) {
+                    const li = document.createElement('li');
+                    li.className = 'boxoffice-item';
+                    li.innerHTML = `
+                        <span class="boxoffice-rank">${i}</span>
+                        <div class="boxoffice-info">
+                            <div class="boxoffice-name">${movie.name}</div>
+                            <div class="boxoffice-data">
+                                ${movie['release date']} | 票房${movie['Box Office Million']} | 
+                                市占比：${movie['Share of box office']}
+                            </div>
+                        </div>
+                    `;
+                    boxofficeList.appendChild(li);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchHistoryData();
+            fetchWeiboData();
+            fetchBoxOfficeData();
+
+            const mainContainer = document.getElementById('main-container');
+            const websiteNav = document.getElementById('website-nav');
+            const navLinks = document.querySelectorAll('.nav-sidebar a');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const text = link.textContent;
+                    
+                    // 隐藏所有内容
+                    mainContainer.style.display = 'none';
+                    websiteNav.style.display = 'none';
+                    document.getElementById('function-list').style.display = 'none';
+                    
+                    // 根据点击的链接显示相应内容
+                    if (text === '网站整理') {
+                        websiteNav.style.display = 'block';
+                    } else if (text === '首页') {
+                        mainContainer.style.display = 'grid';
+                    } else if (text === '功能列表') {
+                        document.getElementById('function-list').style.display = 'block';
+                    }
+                });
+            });
+
+            fetchYiyan(); // 获取一言
+
+            // 每隔一段时间刷新一言
+            setInterval(fetchYiyan, 60000); // 每分钟刷新一次
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                fetchHistoryData();
+                fetchWeiboData();
+                fetchBoxOfficeData();
+            }
+        });
+
+        async function fetchYiyan() {
+            try {
+                const proxyUrl = 'https://cors.eu.org/';
+                const response = await fetch(proxyUrl + 'https://v.api.aa1.cn/api/yiyan/index.php');
+                const text = await response.text();
+                
+                // 用正则表达式匹配中文字符，并去除前面的多余内容
+                const cleanText = text.replace(/^[\s\S]*?(?=[\u4e00-\u9fa5])/, '');
+                
+                // 再次清理，只保留中文和中文标点
+                const chineseText = cleanText.match(/[\u4e00-\u9fa5，。！？、]+/g);
+                
+                if (chineseText && chineseText.length > 0) {
+                    document.getElementById('yiyan').textContent = chineseText.join('').trim();
+                } else {
+                    document.getElementById('yiyan').textContent = '心之所向，素履以往。生如逆旅，一苇以航。';
+                }
+            } catch (error) {
+                console.error('获取一言失败:', error);
+                document.getElementById('yiyan').textContent = '心之所向，素履以往。生如逆旅，一苇以航。';
+            }
+        }
+
+        document.getElementById('search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchInput = this.querySelector('.search-input').value;
+            const searchEngine = this.querySelector('input[name="search-engine"]:checked').value;
+            
+            let searchUrl;
+            if (searchEngine === 'baidu') {
+                searchUrl = `https://www.baidu.com/s?wd=${encodeURIComponent(searchInput)}`;
+            } else {
+                searchUrl = `https://www.google.com/search?q=${encodeURIComponent(searchInput)}`;
+            }
+            
+            window.open(searchUrl, '_blank');
+        });
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</body>
+</html> 

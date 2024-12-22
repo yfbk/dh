@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星空渐变背景</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-container {
+            position: relative;
+            width: 90vw;
+            max-width: 1200px;
+            margin: 20px auto;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            object-fit: contain;
+            background: #000000;
+        }
+
+        .refresh-button {
+            padding: 12px 24px;
+            font-size: 16px;
+            color: white;
+            background: linear-gradient(45deg, #1a1a3a, #006699);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 102, 153, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .refresh-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 102, 153, 0.5);
+            background: linear-gradient(45deg, #1a1a3a, #0088cc);
+        }
+
+        .refresh-button:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 768px) {
+            .video-container {
+                width: 95vw;
+                margin: 10px auto;
+                padding: 10px;
+            }
+
+            .refresh-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="video-container">
+        <video id="videoPlayer" controls autoplay>
+            您的浏览器不支持视频播放。
+        </video>
+        <button class="refresh-button" onclick="refreshVideo()">换一个视频</button>
+    </div>
+
+    <script>
+        const videoPlayer = document.getElementById('videoPlayer');
+        
+        async function loadVideo() {
+            try {
+                videoPlayer.src = 'https://api.71xk.com/api/video/v1?' + new Date().getTime();
+                videoPlayer.load();
+                console.log('开始加载新视频');
+                
+                retryCount = 0;
+            } catch (error) {
+                console.error('获取视频出错:', error);
+                retryLoadVideo();
+            }
+        }
+
+        function refreshVideo() {
+            const button = document.querySelector('.refresh-button');
+            button.disabled = true;
+            button.style.opacity = '0.7';
+            button.textContent = '加载中...';
+            
+            loadVideo().finally(() => {
+                setTimeout(() => {
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                    button.textContent = '换一个视频';
+                }, 1000);
+            });
+        }
+
+        let retryCount = 0;
+        const maxRetries = 3;
+
+        function retryLoadVideo() {
+            if (retryCount < maxRetries) {
+                retryCount++;
+                console.log(`重试第${retryCount}次`);
+                setTimeout(loadVideo, 2000);
+            } else {
+                console.error('达到最大重试次数');
+            }
+        }
+
+        // 添加窗口大小变化监听
+        window.addEventListener('resize', () => {
+            console.log('窗口大小已改变');
+        });
+
+        // 页面加载时开始获取视频
+        document.addEventListener('DOMContentLoaded', loadVideo);
+
+        // 添加视频错误处理
+        videoPlayer.addEventListener('error', (e) => {
+            console.error('视频播放错误:', e);
+            retryLoadVideo();
+        });
+
+        // 添加视频功播放处理
+        videoPlayer.addEventListener('playing', () => {
+            console.log('视频开始播放');
+            retryCount = 0; // 重置重试计数
+        });
+    </script>
+</body>
+</html> 
